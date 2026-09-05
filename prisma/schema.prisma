@@ -1,0 +1,130 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                String             @id @default(cuid())
+  clerkId           String             @unique
+  email             String             @unique
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  cvs               CV[]
+  interviewSessions InterviewSession[]
+  JobMatch          JobMatch[]
+
+  @@index([clerkId])
+  @@index([email])
+}
+
+model CV {
+  id               String            @id @default(cuid())
+  userId           String
+  fileName         String
+  fileUrl          String?
+  rawText          String?
+  uploadedAt       DateTime          @default(now())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  candidateProfile CandidateProfile?
+
+  @@index([userId])
+}
+
+model CandidateProfile {
+  id             String   @id @default(cuid())
+  cvId           String   @unique
+  fullName       String?
+  headline       String?
+  summary        String?
+  skills         Json?
+  experience     Json?
+  education      Json?
+  certifications Json?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  cv             CV       @relation(fields: [cvId], references: [id], onDelete: Cascade)
+}
+
+model Job {
+  id           String     @id @default(cuid())
+  title        String
+  company      String
+  location     String?
+  description  String?
+  requirements Json?
+  sourceUrl    String?
+  source       String?
+  postedAt     DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  jobMatches   JobMatch[]
+
+  @@index([title])
+  @@index([company])
+  @@index([location])
+}
+
+model JobMatch {
+  id            String   @id @default(cuid())
+  userId        String
+  jobId         String
+  matchScore    Float
+  explanation   String?
+  matchedSkills Json?
+  missingSkills Json?
+  createdAt     DateTime @default(now())
+  job           Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  User          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, jobId])
+  @@index([jobId])
+  @@index([matchScore])
+  @@index([userId])
+}
+
+model InterviewSession {
+  id           String              @id @default(cuid())
+  userId       String
+  jobTitle     String?
+  company      String?
+  sessionType  String?
+  overallScore Float?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  questions    InterviewQuestion[]
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model InterviewQuestion {
+  id         String           @id @default(cuid())
+  sessionId  String
+  question   String
+  category   String?
+  difficulty String?
+  order      Int
+  createdAt  DateTime         @default(now())
+  answer     InterviewAnswer?
+  session    InterviewSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, order])
+  @@index([sessionId])
+}
+
+model InterviewAnswer {
+  id         String            @id @default(cuid())
+  questionId String            @unique
+  answerText String
+  score      Float?
+  feedback   String?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+  question   InterviewQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}

@@ -1,0 +1,19 @@
+{
+  "name": "hire-lens",
+  "version": "0.1.0",
+  "description": "AI-powered career intelligence platform",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run dev --workspace=backend",
+    "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
+    "test": "npm test --workspace=backend",
+    "start": "npm start --workspace=backend"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "dependencies": {
+    "@google/genai": "^2.19.0"
+  }
+}

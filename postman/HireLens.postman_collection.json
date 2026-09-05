@@ -1,0 +1,137 @@
+{
+  "info": {
+    "name": "HireLens API",
+    "description": "HireLens - AI-powered career intelligence platform API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Checks",
+      "item": [
+        {
+          "name": "Root Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          }
+        },
+        {
+          "name": "Health Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/health",
+              "host": ["{{base_url}}"],
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Database Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/database",
+              "host": ["{{base_url}}"],
+              "path": ["api", "database"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "CV Management",
+      "item": [
+        {
+          "name": "Create CV",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"cmta9lsqx0000i8idvwtwbbpe\",\n  \"fileName\": \"my-resume.pdf\",\n  \"rawText\": \"John Doe\\nSoftware Engineer\\n\\nSkills: JavaScript, TypeScript, React, Node.js, Express, PostgreSQL, Prisma, Docker\",\n  \"fileUrl\": null\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cvs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cvs"]
+            }
+          }
+        },
+        {
+          "name": "List CVs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cvs?userId=cmta9lsqx0000i8idvwtwbbpe",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cvs"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "cmta9lsqx0000i8idvwtwbbpe"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get CV",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cvs/cmtaa23sd0000p0idma94ph9n?userId=cmta9lsqx0000i8idvwtwbbpe",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cvs", "cmtaa23sd0000p0idma94ph9n"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "cmta9lsqx0000i8idvwtwbbpe"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete CV",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/cvs/cmtaa23sd0000p0idma94ph9n?userId=cmta9lsqx0000i8idvwtwbbpe",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cvs", "cmtaa23sd0000p0idma94ph9n"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "cmta9lsqx0000i8idvwtwbbpe"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001",
+      "type": "string"
+    }
+  ]
+}
