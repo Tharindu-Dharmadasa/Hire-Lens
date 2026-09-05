@@ -37,3 +37,10 @@ export interface ApiErrorResponse {
   message: string;
   code?: string;
 }
+
+export type JsonValue =
+  | string
+  | number
+  | boolean
+  | JsonValue[]
+  | { [key: string]: JsonValue };

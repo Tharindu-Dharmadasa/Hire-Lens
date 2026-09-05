@@ -7,6 +7,7 @@
 
 import { prisma } from "@/database/prisma.js";
 import { ApiError } from "@/types/index.js";
+import { AIService, CVAnalysisResult } from "@/services/ai/index.js";
 
 export interface CreateCVData {
   userId: string;
@@ -16,6 +17,16 @@ export interface CreateCVData {
 }
 
 export class CVService {
+  private aiService?: AIService;
+
+  private getAIService(): AIService {
+    if (!this.aiService) {
+      this.aiService = new AIService();
+    }
+
+    return this.aiService;
+  }
+
   async createCV(data: CreateCVData) {
     const cv = await prisma.cV.create({
       data: {
@@ -172,5 +183,38 @@ export class CVService {
     return knownSkills.filter((skill) =>
       normalizedText.includes(skill.toLowerCase()),
     );
+  }
+
+  async analyzeCV(
+    cvId: string,
+    userId: string,
+  ): Promise<{
+    cvId: string;
+    fileName: string;
+    analysis: CVAnalysisResult;
+  }> {
+    const cv = await prisma.cV.findUnique({
+      where: { id: cvId },
+    });
+
+    if (!cv) {
+      throw new ApiError(404, "CV not found");
+    }
+
+    if (cv.userId !== userId) {
+      throw new ApiError(403, "Unauthorized access to this CV");
+    }
+
+    if (!cv.rawText?.trim()) {
+      throw new ApiError(400, "CV does not contain text for analysis");
+    }
+
+    const analysis = await this.getAIService().analyzeCV(cv.rawText);
+
+    return {
+      cvId: cv.id,
+      fileName: cv.fileName,
+      analysis,
+    };
   }
 }

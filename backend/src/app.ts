@@ -12,6 +12,7 @@ import { errorHandler, notFoundHandler } from "@/middleware/errorHandler.js";
 import { healthRouter } from "@/routes/health.js";
 import { databaseRouter } from "@/routes/database.js";
 import { cvRouter } from "@/routes/cv.js";
+import { jobsRouter } from "@/routes/jobs.js";
 
 export function createApp(): Express {
   const app = express();
@@ -38,6 +39,7 @@ export function createApp(): Express {
   app.use(config.apiPrefix, healthRouter);
   app.use(config.apiPrefix, databaseRouter);
   app.use(config.apiPrefix, cvRouter);
+  app.use(config.apiPrefix, jobsRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

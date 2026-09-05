@@ -15,7 +15,7 @@ model User {
   updatedAt         DateTime           @updatedAt
   cvs               CV[]
   interviewSessions InterviewSession[]
-  jobMatches        JobMatch[]
+  JobMatch          JobMatch[]
 
   @@index([clerkId])
   @@index([email])
@@ -79,14 +79,13 @@ model JobMatch {
   matchedSkills Json?
   missingSkills Json?
   createdAt     DateTime @default(now())
-
   job           Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  User          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, jobId])
-  @@index([userId])
   @@index([jobId])
   @@index([matchScore])
+  @@index([userId])
 }
 
 model InterviewSession {
