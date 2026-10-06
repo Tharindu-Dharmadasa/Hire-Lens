@@ -1,224 +1,155 @@
 # HireLens API Documentation
 
-## Base URL
+Base URL:
 
-**Development**: `http://localhost:3001/api`
-**Production**: `TBD`
+```text
+http://localhost:3001
+```
 
-## Authentication
+API prefix:
 
-All endpoints requiring authentication should include the user's ID in query parameters or request body.
+```text
+/api
+```
 
-Current approach uses user ID verification for data ownership.
+Development authentication note:
 
-## Response Format
+During MVP development, APIs use `userId` in the request body or query parameters to validate ownership. In production, this should be replaced with Clerk authentication middleware.
 
-All endpoints return JSON responses with the following format:
+---
+
+# Root
+
+## GET `/`
+
+Returns basic API information.
+
+### Response
 
 ```json
 {
-  "status": "ok" | "error",
-  "message": "optional message",
-  "data": {}
+  "status": "ok",
+  "service": "HireLens API",
+  "message": "Welcome to HireLens API. Use GET /api/health for health status."
 }
 ```
 
-## Endpoints
+---
 
-### Health Checks
+# Health API
 
-#### GET /health
+## GET `/api/health`
 
-Check API health status.
+Checks whether the backend is running.
 
-**Response**: `200 OK`
+### Response
+
+```json
+{
+  "status": "ok",
+  "service": "HireLens API"
+}
+```
+
+---
+
+# Database API
+
+## GET `/api/database`
+
+Checks database connectivity.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "message": "Database connection successful"
+}
+```
+
+---
+
+# CV API
+
+## POST `/api/cvs`
+
+Creates a CV record.
+
+### Request Body
+
+```json
+{
+  "userId": "USER_ID",
+  "fileName": "Tharindu_Dharmadasa_CV.pdf",
+  "rawText": "CV text content here",
+  "fileUrl": "optional-file-url"
+}
+```
+
+### Response
 
 ```json
 {
   "status": "ok",
   "data": {
-    "status": "ok",
-    "service": "HireLens API"
+    "id": "CV_ID",
+    "userId": "USER_ID",
+    "fileName": "Tharindu_Dharmadasa_CV.pdf",
+    "rawText": "CV text content here",
+    "fileUrl": "optional-file-url"
   }
 }
 ```
 
-#### GET /database
+---
 
-Check database connectivity.
+## GET `/api/cvs?userId=USER_ID`
 
-**Response**: `200 OK`
+Lists CVs for a user.
 
-```json
-{
-  "status": "ok",
-  "data": {
-    "database": "connected"
-  }
-}
-```
-
-### CV Management
-
-#### POST /cvs
-
-Create a new CV record and extract candidate profile.
-
-**Request**:
-
-```json
-{
-  "userId": "cmta9lsqx0000i8idvwtwbbpe",
-  "fileName": "resume.pdf",
-  "rawText": "John Doe...",
-  "fileUrl": "optional-url-to-file"
-}
-```
-
-**Response**: `201 Created`
-
-```json
-{
-  "status": "ok",
-  "data": {
-    "cv": {
-      "id": "cmtaa23sd0000p0idma94ph9n",
-      "userId": "cmta9lsqx0000i8idvwtwbbpe",
-      "fileName": "resume.pdf",
-      "fileUrl": null,
-      "rawText": "John Doe...",
-      "uploadedAt": "2024-01-15T10:30:00Z",
-      "createdAt": "2024-01-15T10:30:00Z",
-      "updatedAt": "2024-01-15T10:30:00Z"
-    },
-    "candidateProfile": {
-      "id": "cmtaa23sd0000p0idma94ph9o",
-      "cvId": "cmtaa23sd0000p0idma94ph9n",
-      "fullName": "John Doe",
-      "headline": null,
-      "summary": null,
-      "skills": ["JavaScript", "TypeScript", "React"],
-      "experience": [],
-      "education": [],
-      "certifications": []
-    }
-  }
-}
-```
-
-**Validation**:
-
-- `userId`: Required, must be string
-- `fileName`: Required, must be string
-- `rawText`: Required, must be string
-- `fileUrl`: Optional, must be string if provided
-
-**Error Responses**:
-
-- `400 Bad Request`: Missing or invalid parameters
-- `500 Internal Server Error`: Database error
-
-#### GET /cvs
-
-List all CVs for a user.
-
-**Query Parameters**:
-
-- `userId`: Required, user ID
-
-**Example**: `GET /cvs?userId=cmta9lsqx0000i8idvwtwbbpe`
-
-**Response**: `200 OK`
+### Response
 
 ```json
 {
   "status": "ok",
   "data": [
     {
-      "id": "cmtaa23sd0000p0idma94ph9n",
-      "userId": "cmta9lsqx0000i8idvwtwbbpe",
-      "fileName": "resume.pdf",
-      "fileUrl": null,
-      "rawText": "...",
-      "uploadedAt": "2024-01-15T10:30:00Z",
-      "createdAt": "2024-01-15T10:30:00Z",
-      "updatedAt": "2024-01-15T10:30:00Z",
-      "candidateProfile": {
-        "id": "cmtaa23sd0000p0idma94ph9o",
-        "cvId": "cmtaa23sd0000p0idma94ph9n",
-        "fullName": "John Doe",
-        "headline": null,
-        "summary": null,
-        "skills": ["JavaScript", "TypeScript", "React"],
-        "experience": [],
-        "education": [],
-        "certifications": []
-      }
+      "id": "CV_ID",
+      "userId": "USER_ID",
+      "fileName": "Tharindu_Dharmadasa_CV.pdf"
     }
   ]
 }
 ```
 
-**Error Responses**:
+---
 
-- `400 Bad Request`: Missing userId parameter
+## GET `/api/cvs/:id?userId=USER_ID`
 
-#### GET /cvs/:id
+Gets a single CV owned by the user.
 
-Retrieve a specific CV.
-
-**Query Parameters**:
-
-- `userId`: Required, for ownership verification
-
-**Example**: `GET /cvs/cmtaa23sd0000p0idma94ph9n?userId=cmta9lsqx0000i8idvwtwbbpe`
-
-**Response**: `200 OK`
+### Response
 
 ```json
 {
   "status": "ok",
   "data": {
-    "id": "cmtaa23sd0000p0idma94ph9n",
-    "userId": "cmta9lsqx0000i8idvwtwbbpe",
-    "fileName": "resume.pdf",
-    "fileUrl": null,
-    "rawText": "...",
-    "uploadedAt": "2024-01-15T10:30:00Z",
-    "createdAt": "2024-01-15T10:30:00Z",
-    "updatedAt": "2024-01-15T10:30:00Z",
-    "candidateProfile": {
-      "id": "cmtaa23sd0000p0idma94ph9o",
-      "cvId": "cmtaa23sd0000p0idma94ph9n",
-      "fullName": "John Doe",
-      "headline": null,
-      "summary": null,
-      "skills": ["JavaScript", "TypeScript", "React"],
-      "experience": [],
-      "education": [],
-      "certifications": []
-    }
+    "id": "CV_ID",
+    "userId": "USER_ID",
+    "fileName": "Tharindu_Dharmadasa_CV.pdf",
+    "candidateProfile": {}
   }
 }
 ```
 
-**Error Responses**:
+---
 
-- `400 Bad Request`: Missing userId parameter
-- `403 Forbidden`: User does not own this CV
-- `404 Not Found`: CV not found
+## DELETE `/api/cvs/:id?userId=USER_ID`
 
-#### DELETE /cvs/:id
+Deletes a CV owned by the user.
 
-Delete a CV.
-
-**Query Parameters**:
-
-- `userId`: Required, for ownership verification
-
-**Example**: `DELETE /cvs/cmtaa23sd0000p0idma94ph9n?userId=cmta9lsqx0000i8idvwtwbbpe`
-
-**Response**: `200 OK`
+### Response
 
 ```json
 {
@@ -230,30 +161,452 @@ Delete a CV.
 }
 ```
 
-**Error Responses**:
+---
 
-- `400 Bad Request`: Missing userId parameter
-- `403 Forbidden`: User does not own this CV
-- `404 Not Found`: CV not found
+## POST `/api/cvs/:id/analyze?userId=USER_ID`
+
+Analyzes a CV using AI and creates/updates the candidate profile.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "message": "CV analyzed successfully",
+  "data": {
+    "analysis": {
+      "score": 80,
+      "summary": "Professional CV summary",
+      "strengths": [],
+      "weaknesses": [],
+      "skills": {
+        "technical": [],
+        "soft": []
+      },
+      "experienceAnalysis": "Experience analysis",
+      "educationAnalysis": "Education analysis",
+      "atsCompatibility": 75,
+      "recommendations": []
+    },
+    "candidateProfile": {
+      "id": "PROFILE_ID",
+      "cvId": "CV_ID"
+    }
+  }
+}
+```
 
 ---
 
-## Future Endpoints
+# AI Reliability
 
-### Job Matching (Phase 2)
+Gemini can return temporary overload or service-unavailable errors. The backend handles retryable errors such as `429 RESOURCE_EXHAUSTED` and `503 UNAVAILABLE` using exponential backoff, then attempts the configured fallback model.
 
-- `POST /jobs/match` - Match profile against jobs
-- `GET /jobs` - List available jobs
-- `GET /jobs/:id` - Get job details
+If Gemini remains unavailable, the backend returns:
 
-### Interview Coach (Phase 3)
+```json
+{
+  "status": "error",
+  "message": "AI service is temporarily unavailable. Please try again later."
+}
+```
 
-- `POST /interviews/sessions` - Create interview session
-- `GET /interviews/sessions` - List user's sessions
-- `POST /interviews/answer` - Submit answer to question
-- `GET /interviews/:sessionId` - Get session details
+Temporary Gemini overload must not crash the server.
 
 ---
 
-**Status**: Step 9A Complete
-**Last Updated**: 2024-01-15
+# Job API
+
+## POST `/api/jobs`
+
+Creates a job.
+
+### Request Body
+
+```json
+{
+  "userId": "USER_ID",
+  "title": "Full-Stack Software Engineer Intern",
+  "company": "Tech Startup",
+  "location": "Colombo, Sri Lanka",
+  "description": "Job description here",
+  "requirements": {
+    "skills": ["React", "Node.js", "PostgreSQL"]
+  },
+  "sourceUrl": "https://example.com/job",
+  "source": "LinkedIn"
+}
+```
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "id": "JOB_ID",
+    "title": "Full-Stack Software Engineer Intern",
+    "company": "Tech Startup"
+  }
+}
+```
+
+---
+
+## GET `/api/jobs?userId=USER_ID`
+
+Lists jobs with the user's match data when available.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": [
+    {
+      "id": "JOB_ID",
+      "title": "Full-Stack Software Engineer Intern",
+      "company": "Tech Startup",
+      "jobMatches": []
+    }
+  ]
+}
+```
+
+---
+
+## GET `/api/jobs/:id?userId=USER_ID`
+
+Gets a single job.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "id": "JOB_ID",
+    "title": "Full-Stack Software Engineer Intern",
+    "company": "Tech Startup",
+    "jobMatches": []
+  }
+}
+```
+
+---
+
+## DELETE `/api/jobs/:id?userId=USER_ID`
+
+Deletes a job.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "success": true,
+    "message": "Job deleted successfully"
+  }
+}
+```
+
+---
+
+# Job Matching API
+
+## POST `/api/jobs/:id/match?userId=USER_ID`
+
+Matches a job against the user's latest CV candidate profile, or against a specific CV if `cvId` is provided.
+
+### Optional Request Body
+
+```json
+{
+  "cvId": "CV_ID"
+}
+```
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "message": "Job matched successfully",
+  "data": {
+    "match": {
+      "id": "MATCH_ID",
+      "userId": "USER_ID",
+      "jobId": "JOB_ID",
+      "matchScore": 82,
+      "explanation": "The candidate matches several required skills.",
+      "matchedSkills": ["React", "Node.js"],
+      "missingSkills": ["AWS"]
+    },
+    "job": {
+      "id": "JOB_ID",
+      "title": "Full-Stack Software Engineer Intern"
+    },
+    "cv": {
+      "id": "CV_ID",
+      "fileName": "Tharindu_Dharmadasa_CV.pdf"
+    },
+    "candidateProfile": {}
+  }
+}
+```
+
+---
+
+## GET `/api/matches?userId=USER_ID`
+
+Lists job matches for the user.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": [
+    {
+      "id": "MATCH_ID",
+      "userId": "USER_ID",
+      "jobId": "JOB_ID",
+      "matchScore": 82,
+      "job": {}
+    }
+  ]
+}
+```
+
+---
+
+## GET `/api/matches/:id?userId=USER_ID`
+
+Gets a single job match owned by the user.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "id": "MATCH_ID",
+    "matchScore": 82,
+    "job": {}
+  }
+}
+```
+
+---
+
+## DELETE `/api/matches/:id?userId=USER_ID`
+
+Deletes a job match owned by the user.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "success": true,
+    "message": "Job match deleted successfully"
+  }
+}
+```
+
+---
+
+# Interview Coach API
+
+## POST `/api/interviews`
+
+Creates an interview session and generates interview questions using AI.
+
+### Request Body
+
+```json
+{
+  "userId": "USER_ID",
+  "jobTitle": "Full-Stack Software Engineer Intern",
+  "company": "Tech Startup",
+  "sessionType": "technical",
+  "questionCount": 5
+}
+```
+
+Optional fields:
+
+```json
+{
+  "candidateProfile": {}
+}
+```
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "message": "Interview session created successfully",
+  "data": {
+    "id": "SESSION_ID",
+    "userId": "USER_ID",
+    "jobTitle": "Full-Stack Software Engineer Intern",
+    "company": "Tech Startup",
+    "sessionType": "technical",
+    "overallScore": null,
+    "questions": [
+      {
+        "id": "QUESTION_ID",
+        "sessionId": "SESSION_ID",
+        "question": "Tell me about a full-stack project you built.",
+        "category": "technical",
+        "difficulty": "medium",
+        "order": 1,
+        "answer": null
+      }
+    ]
+  }
+}
+```
+
+---
+
+## GET `/api/interviews?userId=USER_ID`
+
+Lists interview sessions for the user.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": [
+    {
+      "id": "SESSION_ID",
+      "userId": "USER_ID",
+      "jobTitle": "Full-Stack Software Engineer Intern",
+      "overallScore": null,
+      "questions": []
+    }
+  ]
+}
+```
+
+---
+
+## GET `/api/interviews/:id?userId=USER_ID`
+
+Gets a single interview session owned by the user.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "id": "SESSION_ID",
+    "userId": "USER_ID",
+    "questions": [
+      {
+        "id": "QUESTION_ID",
+        "question": "Tell me about a full-stack project you built.",
+        "answer": null
+      }
+    ]
+  }
+}
+```
+
+---
+
+## POST `/api/interviews/:id/questions/:questionId/answer?userId=USER_ID`
+
+Submits or updates an answer for an interview question. The answer is evaluated by AI.
+
+### Request Body
+
+```json
+{
+  "answerText": "I built a full-stack project using Next.js, Node.js, Prisma, and PostgreSQL..."
+}
+```
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "message": "Interview answer submitted successfully",
+  "data": {
+    "answer": {
+      "id": "ANSWER_ID",
+      "questionId": "QUESTION_ID",
+      "answerText": "I built a full-stack project using Next.js...",
+      "score": 78,
+      "feedback": "Good answer with relevant technical details. Improve by adding measurable impact."
+    },
+    "overallScore": 78
+  }
+}
+```
+
+---
+
+## DELETE `/api/interviews/:id?userId=USER_ID`
+
+Deletes an interview session owned by the user. Related questions and answers are deleted through cascade delete.
+
+### Response
+
+```json
+{
+  "status": "ok",
+  "data": {
+    "success": true,
+    "message": "Interview session deleted successfully"
+  }
+}
+```
+
+---
+
+# Common Error Responses
+
+## Missing `userId`
+
+```json
+{
+  "status": "error",
+  "message": "userId query parameter is required"
+}
+```
+
+## Resource Not Found
+
+```json
+{
+  "status": "error",
+  "message": "Interview session not found"
+}
+```
+
+## AI Service Temporarily Unavailable
+
+```json
+{
+  "status": "error",
+  "message": "AI service is temporarily unavailable. Please try again later."
+}
+```
+
+## Internal Server Error
+
+```json
+{
+  "status": "error",
+  "message": "Internal server error"
+}
+```

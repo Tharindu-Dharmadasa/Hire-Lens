@@ -4,6 +4,8 @@
 
 This specification is frozen. Do not change without explicit approval.
 
+> This document represents the frozen original MVP specification. Current implementation status is tracked in [docs/DEVELOPMENT-STATUS.md](DEVELOPMENT-STATUS.md) and [README.md](../README.md).
+
 ## Product Identity
 
 **HireLens** is a professional, role-agnostic, AI-powered career intelligence platform.
@@ -116,7 +118,9 @@ These will be considered in future phases only.
 7. **InterviewQuestion** - Question in interview
 8. **InterviewAnswer** - Answer to interview question
 
-## API Architecture
+## Original API Architecture
+
+The following endpoint outline is part of the original frozen specification. See the current API reference for implemented routes.
 
 The backend provides a REST API with the following endpoint structure:
 
@@ -138,7 +142,9 @@ GET    /api/interviews/sessions   - List sessions (Phase 3)
 POST   /api/interviews/answer     - Submit answer (Phase 3)
 ```
 
-## Authentication Flow
+## Original Authentication Flow
+
+The following flow is part of the original frozen specification. The current backend MVP uses development-stage `userId` ownership validation; server-side Clerk middleware is planned/in progress.
 
 ```
 1. User visits application
@@ -151,7 +157,7 @@ POST   /api/interviews/answer     - Submit answer (Phase 3)
 8. User ID used for data ownership
 ```
 
-## Development Phases
+## Original Development Phases
 
 ### Phase 1 - Foundation (Completed - Step 9A)
 
@@ -192,7 +198,7 @@ POST   /api/interviews/answer     - Submit answer (Phase 3)
 - Production deployment
 - Monitoring and logging
 
-## Current Status
+## Original Status Snapshot
 
 **STEP 9A — COMPLETED**
 
