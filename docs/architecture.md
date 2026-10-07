@@ -7,9 +7,9 @@ The following architectural decisions are frozen and must not be changed without
 - **Backend**: Express.js + TypeScript
 - **Frontend**: Next.js + TypeScript
 - **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: Clerk
+- **Authentication**: Clerk planned/in progress; development MVP uses `userId` ownership validation
 - **API**: REST
-- **Testing**: Vitest + Supertest
+- **Testing**: Manual Postman testing, TypeScript checks, Prisma validation, and manual frontend testing; automated tests planned later
 - **Containerization**: Docker / Docker Compose
 - **Deployment Target**: AWS (free-tier compatible)
 
@@ -67,15 +67,17 @@ PostgreSQL
 - **Health**: Server health checks
 - **Database**: Database connectivity checks
 - **CV Analyzer**: CV parsing and candidate profile extraction
-- **Job Matcher**: Job matching algorithm (Phase 2)
-- **Interview Coach**: Interview practice and feedback (Phase 3)
-- **AI Services**: AI-powered functionality (Phase 2+)
+- **CV**: CV management, AI analysis, and candidate profile extraction
+- **Jobs**: Job management
+- **Matching**: AI job matching, persistence, and duplicate protection
+- **Interview**: Interview sessions, question generation, answer evaluation, and overall scoring
+- **AI**: Centralized Gemini integration with retry and fallback model support
 
 ## Frontend Architecture
 
 - Component-based architecture using React 18
 - Next.js app directory structure
-- Protected routes with Clerk authentication
+- Frontend Clerk integration is planned/in progress
 - API client for backend communication
 - Responsive design with Tailwind CSS
 
@@ -97,8 +99,9 @@ User ──► Frontend ──► POST /api/cvs ──► Validator
 
 ## Security Architecture
 
-- Clerk handles user authentication
-- User IDs are passed in requests to verify ownership
+- Clerk is the planned authentication provider and is not yet enforced by backend middleware
+- Current MVP routes use `userId` in request bodies or query parameters for development ownership validation
+- Production should replace client-provided `userId` validation with server-side Clerk middleware
 - Database User model maps to Clerk users via `clerkId`
 - CV ownership verified on every operation
 - Secrets never exposed to frontend
@@ -114,5 +117,5 @@ User ──► Frontend ──► POST /api/cvs ──► Validator
 
 ---
 
-**Last Updated**: Step 9A
-**Status**: FROZEN - Do not change without approval
+**Last Updated**: Backend MVP
+**Status**: FROZEN ARCHITECTURE - Do not change without approval

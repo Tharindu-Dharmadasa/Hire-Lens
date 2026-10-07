@@ -1,8 +1,8 @@
 # HireLens Development Status
 
-## Current Phase: Step 9A
+## Current Phase: Backend MVP
 
-**Status**: ✅ COMPLETED
+**Status**: ✅ BACKEND MVP COMPLETED
 
 ### Completed Components
 
@@ -21,6 +21,11 @@
 - TypeScript setup
 - Tailwind CSS ready
 - Clerk authentication architecture
+
+#### Frontend Integration 🚧
+
+- Frontend integration with the backend is in progress
+- UI polish and end-to-end frontend flows remain in progress
 
 #### Database ✅
 
@@ -58,12 +63,37 @@
 - Input validation
 - Error handling
 
-#### Testing ✅
+#### Job Matcher Backend ✅
 
-- Vitest configured
-- Supertest setup
-- Health endpoint tests passing
-- CORS tests passing
+- Job management endpoints
+- AI-powered job matching
+- Job match persistence
+- Duplicate match protection
+- Latest-CV and selected-CV matching
+
+#### Interview Coach Backend ✅
+
+- Interview session management
+- AI interview question generation
+- AI interview answer evaluation
+- Interview answer updates without duplicates
+- Overall interview score calculation
+
+#### AI Reliability ✅
+
+- Gemini retry handling for temporary failures
+- Exponential backoff
+- Fallback model support
+- Clean temporary-unavailability responses
+
+#### Current MVP Verification ✅
+
+- Manual Postman API testing
+- Backend TypeScript type-checking
+- Prisma validation
+- Manual frontend testing
+
+Automated backend tests are planned after the MVP frontend flow stabilizes.
 
 #### Documentation ✅
 
@@ -73,34 +103,32 @@
 - API documentation
 - Development status (this file)
 
-### Not Started (Future Phases)
+### Remaining Work
 
-#### Phase 2 - Job Matching
+#### Frontend Integration
 
-- [ ] Job data ingestion
-- [ ] Matching algorithm
-- [ ] Job search API
-- [ ] Frontend job discovery UI
+- [ ] Connect frontend flows to backend APIs
+- [ ] Build CV, job matching, and interview practice interfaces
+- [ ] Complete UI polish
 
-#### Phase 3 - Interview Coach
+#### Authentication
 
-- [ ] Question generation
-- [ ] Answer evaluation
-- [ ] Feedback system
-- [ ] Interview practice UI
+- [ ] Add server-side Clerk authentication enforcement
+- [ ] Replace development-stage client-provided `userId` ownership validation
 
-#### Phase 4 - AI Integration
-
-- [ ] Advanced CV analysis
-- [ ] AI-powered feedback
-- [ ] Free AI service integration
-
-#### Phase 5 - Production Deployment
+#### Production Deployment
 
 - [ ] AWS deployment setup
 - [ ] CI/CD pipeline
 - [ ] Monitoring
 - [ ] Performance optimization
+
+#### Future Enhancements
+
+- [ ] Automated backend tests after the MVP frontend flow stabilizes
+- [ ] Real CV file upload support
+- [ ] External job source integrations
+- [ ] Advanced career analytics
 
 ## Verification Checklist
 
@@ -114,6 +142,16 @@
 - [x] CV retrieval works
 - [x] CV deletion works
 - [x] Candidate profile extraction works
+- [x] AI CV analysis works
+- [x] Job management works
+- [x] AI job matching works
+- [x] Job match persistence works
+- [x] Duplicate job match protection works
+- [x] Interview session management works
+- [x] AI interview question generation works
+- [x] AI interview answer evaluation works
+- [x] Interview overall score calculation works
+- [x] Gemini retry and fallback handling works
 - [x] User ownership verified
 - [x] Input validation works
 - [x] Error handling works
@@ -121,7 +159,9 @@
 ### Code Quality
 
 - [x] TypeScript compilation passes
-- [x] Tests pass
+- [x] TypeScript checks pass
+- [x] Manual Postman verification completed
+- [x] Prisma validation completed
 - [x] No TypeScript errors
 - [x] Proper error handling
 - [x] Request validation
@@ -174,39 +214,20 @@ postgresql://hirelens:hirelens123@localhost:5432/hirelens_db?schema=public
 
 ## Known Limitations
 
-1. CV parsing is basic - future phases will add AI-powered analysis
-2. No real file upload - text is submitted directly
-3. No job scraping - jobs are manually added (Phase 2)
-4. No interview question generation - manual setup required (Phase 3)
-5. No AI integration yet - free/open alternatives to be used
-6. Frontend UI not implemented - API-only at this stage
+1. No real file upload - CV text is submitted directly
+2. No job scraping - jobs are manually added
+3. Frontend integration and UI flows are still in progress
+4. Clerk backend authentication enforcement is planned/in progress
+5. Automated backend tests are planned after the MVP frontend flow stabilizes
 
 ## Next Steps
 
-After Step 9A:
-
-1. **Phase 2 - Job Matcher Backend**
-   - Implement job storage
-   - Build matching algorithm
-   - Create job endpoints
-
-2. **Phase 2 - Frontend Enhancement**
-   - Build job search UI
-   - Build CV upload UI
-   - Build matching results UI
-
-3. **Phase 3 - Interview Coach Backend**
-   - Question generation
-   - Answer evaluation
-   - Feedback system
-
-4. **Phase 3 - Interview UI**
-   - Practice interface
-   - Question display
-   - Answer submission
+1. Complete frontend integration for CV analysis, job matching, and Interview Coach flows.
+2. Complete UI polish and manual frontend verification.
+3. Add server-side Clerk authentication enforcement.
+4. Add automated backend tests after the MVP frontend flow stabilizes.
 
 ---
 
-**Last Updated**: Step 9A
-**Status**: FROZEN at Step 9A - Ready for Phase 2
-**DO NOT**: Continue beyond Step 9A until explicitly approved
+**Last Updated**: Backend MVP
+**Status**: Backend MVP complete; frontend integration in progress

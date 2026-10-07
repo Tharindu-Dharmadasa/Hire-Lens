@@ -1,5 +1,6 @@
 {
   "info": {
+    "_postman_id": "8e8d6c71-9e0d-4e4a-9d3b-hirelens-api",
     "name": "HireLens API",
     "description": "HireLens - AI-powered career intelligence platform API",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
@@ -61,7 +62,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"userId\": \"cmta9lsqx0000i8idvwtwbbpe\",\n  \"fileName\": \"my-resume.pdf\",\n  \"rawText\": \"John Doe\\nSoftware Engineer\\n\\nSkills: JavaScript, TypeScript, React, Node.js, Express, PostgreSQL, Prisma, Docker\",\n  \"fileUrl\": null\n}"
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"fileName\": \"my-resume.pdf\",\n  \"rawText\": \"John Doe\\nSoftware Engineer\\n\\nSkills: JavaScript, TypeScript, React, Node.js, Express, PostgreSQL, Prisma, Docker\",\n  \"fileUrl\": null\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/cvs",
@@ -76,13 +77,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/cvs?userId=cmta9lsqx0000i8idvwtwbbpe",
+              "raw": "{{base_url}}/api/cvs?userId={{user_id}}",
               "host": ["{{base_url}}"],
               "path": ["api", "cvs"],
               "query": [
                 {
                   "key": "userId",
-                  "value": "cmta9lsqx0000i8idvwtwbbpe"
+                  "value": "{{user_id}}"
                 }
               ]
             }
@@ -94,13 +95,35 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/cvs/cmtaa23sd0000p0idma94ph9n?userId=cmta9lsqx0000i8idvwtwbbpe",
+              "raw": "{{base_url}}/api/cvs/{{cv_id}}?userId={{user_id}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "cvs", "cmtaa23sd0000p0idma94ph9n"],
+              "path": ["api", "cvs", "{{cv_id}}"],
               "query": [
                 {
                   "key": "userId",
-                  "value": "cmta9lsqx0000i8idvwtwbbpe"
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Analyze CV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{base_url}}/api/cvs/{{cv_id}}/analyze?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "cvs", "{{cv_id}}", "analyze"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
                 }
               ]
             }
@@ -112,13 +135,315 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/api/cvs/cmtaa23sd0000p0idma94ph9n?userId=cmta9lsqx0000i8idvwtwbbpe",
+              "raw": "{{base_url}}/api/cvs/{{cv_id}}?userId={{user_id}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "cvs", "cmtaa23sd0000p0idma94ph9n"],
+              "path": ["api", "cvs", "{{cv_id}}"],
               "query": [
                 {
                   "key": "userId",
-                  "value": "cmta9lsqx0000i8idvwtwbbpe"
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Job Management",
+      "item": [
+        {
+          "name": "Create Job",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"title\": \"Software Engineer Intern\",\n  \"company\": \"Example Company\",\n  \"location\": \"Colombo, Sri Lanka\",\n  \"description\": \"We are looking for a software engineering intern with experience in JavaScript, TypeScript, React and Node.js.\",\n  \"requirements\": {\n    \"skills\": [\n      \"JavaScript\",\n      \"TypeScript\",\n      \"React\",\n      \"Node.js\"\n    ]\n  },\n  \"sourceUrl\": \"https://example.com/jobs/123\",\n  \"source\": \"manual\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"]
+            }
+          }
+        },
+        {
+          "name": "List Jobs",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Job",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Job",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Job Matching",
+      "item": [
+        {
+          "name": "Match Job With Latest CV",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}/match?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}", "match"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Match Job With Specific CV",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cvId\": \"{{cv_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/jobs/{{job_id}}/match?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "jobs", "{{job_id}}", "match"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "List Matches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/matches?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "matches"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Match",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/matches/{{match_id}}?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "matches", "{{match_id}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Match",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/matches/{{match_id}}?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "matches", "{{match_id}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Interview Coach",
+      "item": [
+        {
+          "name": "Create Interview Session",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"jobTitle\": \"Software Engineer Intern\",\n  \"company\": \"Example Company\",\n  \"sessionType\": \"technical\",\n  \"questionCount\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/interviews",
+              "host": ["{{base_url}}"],
+              "path": ["api", "interviews"]
+            }
+          }
+        },
+        {
+          "name": "List Interview Sessions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/interviews?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "interviews"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Interview Session",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/interviews/{{session_id}}?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "interviews", "{{session_id}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Submit Interview Answer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"answerText\": \"I built a full-stack application using Next.js, Node.js, Prisma, and PostgreSQL.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/interviews/{{session_id}}/questions/{{question_id}}/answer?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": [
+                "api",
+                "interviews",
+                "{{session_id}}",
+                "questions",
+                "{{question_id}}",
+                "answer"
+              ],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Interview Session",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/interviews/{{session_id}}?userId={{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "interviews", "{{session_id}}"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{user_id}}"
                 }
               ]
             }
@@ -130,8 +455,31 @@
   "variable": [
     {
       "key": "base_url",
-      "value": "http://localhost:3001",
-      "type": "string"
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "user_id",
+      "value": "YOUR_USER_ID"
+    },
+    {
+      "key": "cv_id",
+      "value": "YOUR_CV_ID"
+    },
+    {
+      "key": "job_id",
+      "value": "YOUR_JOB_ID"
+    },
+    {
+      "key": "match_id",
+      "value": "YOUR_MATCH_ID"
+    },
+    {
+      "key": "session_id",
+      "value": "YOUR_SESSION_ID"
+    },
+    {
+      "key": "question_id",
+      "value": "YOUR_QUESTION_ID"
     }
   ]
 }

@@ -13,6 +13,8 @@ import { healthRouter } from "@/routes/health.js";
 import { databaseRouter } from "@/routes/database.js";
 import { cvRouter } from "@/routes/cv.js";
 import { jobsRouter } from "@/routes/jobs.js";
+import { matchingRouter } from "@/routes/matching.js";
+import { interviewRouter } from "@/routes/interview.js";
 
 export function createApp(): Express {
   const app = express();
@@ -40,6 +42,9 @@ export function createApp(): Express {
   app.use(config.apiPrefix, databaseRouter);
   app.use(config.apiPrefix, cvRouter);
   app.use(config.apiPrefix, jobsRouter);
+  app.use(config.apiPrefix, matchingRouter);
+  app.use(config.apiPrefix, interviewRouter);
+  
 
   app.use(notFoundHandler);
   app.use(errorHandler);

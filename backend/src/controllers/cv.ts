@@ -4,7 +4,9 @@
 
 import { Request, Response, NextFunction } from "express";
 import { CVService } from "@/services/cv/index.js";
+import { extractTextFromCVFile } from "@/services/cv/fileParser.js";
 import { validateCreateCV } from "@/validators/index.js";
+import { ApiError } from "@/types/index.js";
 
 const cvService = new CVService();
 
@@ -23,6 +25,41 @@ export async function createCV(
     res.status(201).json({
       status: "ok",
       data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Upload CV
+export async function uploadCV(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> {
+  try {
+    const userId = req.body.userId as string | undefined;
+
+    if (!userId || typeof userId !== "string") {
+      throw new ApiError(400, "userId is required and must be a string");
+    }
+
+    if (!req.file) {
+      throw new ApiError(400, "CV file is required");
+    }
+
+    const rawText = await extractTextFromCVFile(req.file);
+
+    const cv = await cvService.createCV({
+      userId,
+      fileName: req.file.originalname,
+      rawText,
+    });
+
+    res.status(201).json({
+      status: "ok",
+      message: "CV uploaded and text extracted successfully",
+      data: cv,
     });
   } catch (error) {
     next(error);
