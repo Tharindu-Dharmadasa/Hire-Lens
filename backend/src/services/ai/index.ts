@@ -44,6 +44,10 @@ export interface InterviewAnswerEvaluationResult {
   feedback: string;
 }
 
+type GeminiTextResponse = {
+  text?: string;
+};
+
 export class AIService {
   private readonly client: GoogleGenAI;
   private readonly model: string;
@@ -272,81 +276,82 @@ export class AIService {
     model: string,
     prompt: string,
   ): Promise<CVAnalysisResult> {
-    const response = await this.withGeminiRetry(() =>
-      this.client.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "object",
-            properties: {
-              score: {
-                type: "number",
-              },
-              summary: {
-                type: "string",
-              },
-              strengths: {
-                type: "array",
-                items: {
+    const response = await this.withGeminiRetry<GeminiTextResponse>(
+      () =>
+        this.client.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                score: {
+                  type: "number",
+                },
+                summary: {
                   type: "string",
                 },
-              },
-              weaknesses: {
-                type: "array",
-                items: {
-                  type: "string",
-                },
-              },
-              skills: {
-                type: "object",
-                properties: {
-                  technical: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                    },
-                  },
-                  soft: {
-                    type: "array",
-                    items: {
-                      type: "string",
-                    },
+                strengths: {
+                  type: "array",
+                  items: {
+                    type: "string",
                   },
                 },
-                required: ["technical", "soft"],
-              },
-              experienceAnalysis: {
-                type: "string",
-              },
-              educationAnalysis: {
-                type: "string",
-              },
-              atsCompatibility: {
-                type: "number",
-              },
-              recommendations: {
-                type: "array",
-                items: {
+                weaknesses: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                },
+                skills: {
+                  type: "object",
+                  properties: {
+                    technical: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+                    soft: {
+                      type: "array",
+                      items: {
+                        type: "string",
+                      },
+                    },
+                  },
+                  required: ["technical", "soft"],
+                },
+                experienceAnalysis: {
                   type: "string",
                 },
+                educationAnalysis: {
+                  type: "string",
+                },
+                atsCompatibility: {
+                  type: "number",
+                },
+                recommendations: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                },
               },
+              required: [
+                "score",
+                "summary",
+                "strengths",
+                "weaknesses",
+                "skills",
+                "experienceAnalysis",
+                "educationAnalysis",
+                "atsCompatibility",
+                "recommendations",
+              ],
             },
-            required: [
-              "score",
-              "summary",
-              "strengths",
-              "weaknesses",
-              "skills",
-              "experienceAnalysis",
-              "educationAnalysis",
-              "atsCompatibility",
-              "recommendations",
-            ],
           },
-        },
-      }),
+        }) as Promise<GeminiTextResponse>,
     );
 
     const text = response.text;
@@ -449,43 +454,44 @@ ${rawText}
     model: string,
     prompt: string,
   ): Promise<JobMatchResult> {
-    const response = await this.withGeminiRetry(() =>
-      this.client.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "object",
-            properties: {
-              matchScore: {
-                type: "number",
-              },
-              explanation: {
-                type: "string",
-              },
-              matchedSkills: {
-                type: "array",
-                items: {
+    const response = await this.withGeminiRetry<GeminiTextResponse>(
+      () =>
+        this.client.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                matchScore: {
+                  type: "number",
+                },
+                explanation: {
                   type: "string",
                 },
-              },
-              missingSkills: {
-                type: "array",
-                items: {
-                  type: "string",
+                matchedSkills: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
+                },
+                missingSkills: {
+                  type: "array",
+                  items: {
+                    type: "string",
+                  },
                 },
               },
+              required: [
+                "matchScore",
+                "explanation",
+                "matchedSkills",
+                "missingSkills",
+              ],
             },
-            required: [
-              "matchScore",
-              "explanation",
-              "matchedSkills",
-              "missingSkills",
-            ],
           },
-        },
-      }),
+        }) as Promise<GeminiTextResponse>,
     );
 
     const text = response.text;
@@ -501,26 +507,27 @@ ${rawText}
     model: string,
     prompt: string,
   ): Promise<InterviewQuestionResult[]> {
-    const response = await this.withGeminiRetry(() =>
-      this.client.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                question: { type: "string" },
-                category: { type: "string" },
-                difficulty: { type: "string" },
+    const response = await this.withGeminiRetry<GeminiTextResponse>(
+      () =>
+        this.client.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  question: { type: "string" },
+                  category: { type: "string" },
+                  difficulty: { type: "string" },
+                },
+                required: ["question", "category", "difficulty"],
               },
-              required: ["question", "category", "difficulty"],
             },
           },
-        },
-      }),
+        }) as Promise<GeminiTextResponse>,
     );
 
     const text = response.text;
@@ -536,22 +543,23 @@ ${rawText}
     model: string,
     prompt: string,
   ): Promise<InterviewAnswerEvaluationResult> {
-    const response = await this.withGeminiRetry(() =>
-      this.client.models.generateContent({
-        model,
-        contents: prompt,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: "object",
-            properties: {
-              score: { type: "number" },
-              feedback: { type: "string" },
+    const response = await this.withGeminiRetry<GeminiTextResponse>(
+      () =>
+        this.client.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: "application/json",
+            responseSchema: {
+              type: "object",
+              properties: {
+                score: { type: "number" },
+                feedback: { type: "string" },
+              },
+              required: ["score", "feedback"],
             },
-            required: ["score", "feedback"],
           },
-        },
-      }),
+        }) as Promise<GeminiTextResponse>,
     );
 
     const text = response.text;

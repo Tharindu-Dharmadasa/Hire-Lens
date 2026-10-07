@@ -7,7 +7,6 @@
 import { prisma } from "@/database/prisma.js";
 import { AIService } from "@/services/ai/index.js";
 import { ApiError } from "@/types/index.js";
-
 export interface CreateInterviewSessionData {
   userId: string;
   jobTitle?: string;
@@ -23,6 +22,8 @@ export interface SubmitInterviewAnswerData {
   userId: string;
   answerText: string;
 }
+
+type TransactionClient = any;
 
 export class InterviewService {
   private readonly aiService?: AIService;
@@ -51,7 +52,7 @@ export class InterviewService {
       questionCount: data.questionCount,
     });
 
-    return prisma.$transaction(async (transaction) => {
+    return prisma.$transaction(async (transaction: TransactionClient) => {
       const session = await transaction.interviewSession.create({
         data: {
           userId: data.userId,
@@ -187,7 +188,7 @@ export class InterviewService {
       answer: data.answerText,
     });
 
-    return prisma.$transaction(async (transaction) => {
+    return prisma.$transaction(async (transaction: TransactionClient) => {
       const answer = await transaction.interviewAnswer.upsert({
         where: {
           questionId: data.questionId,
@@ -225,23 +226,21 @@ export class InterviewService {
         },
       });
 
-      const scores = answeredQuestions
-        .map((answeredQuestion) => answeredQuestion.answer?.score)
-        .filter(
-          (score): score is number => score !== null && score !== undefined,
-        );
-      const overallScore = scores.length
-        ? scores.reduce((total, score) => total + score, 0) / scores.length
-        : null;
+      const scores: number[] = answeredQuestions
+        .map(
+          (answeredQuestion: { answer: { score: number | null } | null }) => {
+            return answeredQuestion.answer?.score;
+          },
+        )
+        .filter((score: number | null | undefined): score is number => {
+          return typeof score === "number";
+        });
 
-      await transaction.interviewSession.update({
-        where: {
-          id: data.sessionId,
-        },
-        data: {
-          overallScore,
-        },
-      });
+      const overallScore =
+        scores.length > 0
+          ? scores.reduce((total: number, score: number) => total + score, 0) /
+            scores.length
+          : null;
 
       return {
         answer,

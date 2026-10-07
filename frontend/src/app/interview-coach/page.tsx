@@ -102,9 +102,7 @@ export default function InterviewCoachPage() {
   const [session, setSession] = useState<InterviewSession | null>(null);
   const [selectedQuestion, setSelectedQuestion] =
     useState<InterviewQuestion | null>(null);
-  const [answerText, setAnswerText] = useState(
-    "In my recent full-stack projects, I worked with Next.js, React, Node.js, Prisma, PostgreSQL, and REST APIs. I usually start by understanding requirements, designing the database, building backend endpoints, testing them with Postman, and then connecting the frontend. One example is HireLens, where I built CV analysis, job matching, and interview coaching features using a modular backend architecture.",
-  );
+  const [answerText, setAnswerText] = useState("");
 
   const [lastAnswer, setLastAnswer] = useState<InterviewAnswer | null>(null);
   const [overallScore, setOverallScore] = useState<number | null>(null);
@@ -313,7 +311,7 @@ export default function InterviewCoachPage() {
 
                   {session ? (
                     <Alert color="green" radius="md">
-                      Interview session created. Session ID: {session.id}
+                      Interview session created.
                     </Alert>
                   ) : null}
                 </Stack>
@@ -434,7 +432,10 @@ export default function InterviewCoachPage() {
                       <Textarea
                         label="Your answer"
                         placeholder="Write your interview answer here..."
+                        autosize
+                        autoFocus
                         minRows={9}
+                        maxRows={18}
                         value={answerText}
                         onChange={(event) =>
                           setAnswerText(event.currentTarget.value)

@@ -10,11 +10,15 @@ The platform is designed to support different professional backgrounds without r
 
 ## 📌 Project Status
 
-**Backend MVP:** Completed  
-**Frontend:** In progress  
-**Database:** Implemented  
-**AI Integration:** Implemented  
-**Manual API Testing:** Completed
+| Area                       | Status      |
+| -------------------------- | ----------- |
+| Backend MVP                | Completed   |
+| Frontend MVP               | Functional  |
+| Database                   | Implemented |
+| AI Integration             | Implemented |
+| Docker Backend             | Completed   |
+| Google Cloud Run Readiness | Prepared    |
+| Manual API Testing         | Completed   |
 
 HireLens currently includes three core AI-powered career modules:
 
@@ -26,11 +30,10 @@ HireLens currently includes three core AI-powered career modules:
 
 ## ✨ Key Features
 
-### ✅ Implemented
-
-#### CV Analyzer
+### CV Analyzer
 
 - Create, list, retrieve, and delete CV records
+- Upload and extract text from PDF/DOCX CV files
 - Analyze CV content using Gemini AI
 - Generate CV quality score
 - Identify strengths and weaknesses
@@ -39,25 +42,18 @@ HireLens currently includes three core AI-powered career modules:
 - Provide practical improvement recommendations
 - Create structured candidate profiles from CV analysis
 
-#### Job Management
+### AI Job Matcher
 
-- Create job records
-- List available jobs
-- Retrieve individual job details
-- Delete job records
-- Store flexible job requirements using JSON
-
-#### AI Job Matcher
-
+- Create and manage job records
 - Compare candidate profiles against job descriptions
 - Generate job match score
 - Identify matched skills
 - Identify missing skills
 - Store job matching results
 - Prevent duplicate match records for the same user and job
-- Support matching against the latest CV or a selected CV
+- Support matching against the latest CV or selected CV
 
-#### AI Interview Coach
+### AI Interview Coach
 
 - Create interview sessions
 - Generate AI-powered interview questions
@@ -68,7 +64,7 @@ HireLens currently includes three core AI-powered career modules:
 - Calculate overall interview score
 - Update existing answers without creating duplicates
 
-#### Backend Reliability
+### Backend Reliability
 
 - Gemini retry handling
 - Fallback model support
@@ -78,65 +74,59 @@ HireLens currently includes three core AI-powered career modules:
 
 ---
 
+## 📸 Screenshots
+
+### Landing Page
+
+![HireLens Landing Page](docs/screenshots/landing-page.png)
+
+### CV Analyzer
+
+![CV Analyzer](docs/screenshots/cv-analyzer.png)
+
+### AI Job Matcher
+
+![AI Job Matcher](docs/screenshots/job-matcher.png)
+
+### AI Interview Coach
+
+![AI Interview Coach](docs/screenshots/interview-coach.png)
+
+---
+
 ## 🧠 AI Capabilities
 
 HireLens uses Google Gemini through a centralized backend AI service.
 
-### CV Analysis Output
+The AI modules generate:
 
-The CV Analyzer produces:
-
-- Overall CV score
-- Professional summary
-- Strengths
-- Weaknesses
-- Technical skills
-- Soft skills
-- Experience analysis
-- Education analysis
+- CV score and CV improvement feedback
+- Professional summary and extracted candidate profile
 - ATS compatibility score
-- Recommendations
-
-### Job Matching Output
-
-The Job Matcher produces:
-
-- Match score
-- Explanation
-- Matched skills
-- Missing skills
-
-### Interview Coach Output
-
-The Interview Coach produces:
-
-- Interview questions
-- Question category
-- Question difficulty
-- Answer score
-- AI feedback
-- Overall session score
+- Job match score with matched and missing skills
+- Interview questions based on role/session type
+- Interview answer scores and feedback
+- Overall interview session score
 
 ---
 
 ## 🏗️ Architecture
 
-HireLens follows a **modular monolith architecture**.
+HireLens follows a modular monolith architecture.
 
 ```text
 Frontend
 Next.js + TypeScript
 Port 3000
-        │
-        │ REST API
-        ▼
+   │
+   │ REST API
+   ▼
 Backend
 Express.js + TypeScript
 Port 3001
-        │
-        ├── PostgreSQL + Prisma
-        │
-        └── Gemini AI
+   │
+   ├── PostgreSQL + Prisma
+   └── Gemini AI
 ```
 
 The backend is organized by feature modules, with controllers, services, routes, validators, middleware, and shared types separated clearly.
@@ -147,15 +137,16 @@ The backend is organized by feature modules, with controllers, services, routes,
 
 | Layer            | Technology                                                                        |
 | ---------------- | --------------------------------------------------------------------------------- |
-| Frontend         | Next.js, React, TypeScript, Tailwind CSS                                          |
+| Frontend         | Next.js, React, TypeScript, Mantine UI                                            |
 | Backend          | Node.js, Express.js, TypeScript                                                   |
 | Database         | PostgreSQL 16                                                                     |
 | ORM              | Prisma                                                                            |
 | AI               | Google Gemini                                                                     |
-| Authentication   | Clerk                                                                             |
+| Authentication   | Clerk planned / MVP uses `userId` ownership validation                            |
 | API Style        | REST                                                                              |
 | API Testing      | Postman                                                                           |
 | Containerization | Docker, Docker Compose                                                            |
+| Cloud Readiness  | Google Cloud Run, Artifact Registry, Cloud Logging                                |
 | Testing          | TypeScript checks, Prisma validation, manual API testing, manual frontend testing |
 
 ---
@@ -181,6 +172,7 @@ hire-lens/
 │   │   ├── validators/
 │   │   ├── app.ts
 │   │   └── server.ts
+│   ├── Dockerfile
 │   ├── package.json
 │   └── tsconfig.json
 │
@@ -193,12 +185,14 @@ hire-lens/
 │   ├── schema.prisma
 │   └── migrations/
 │
+├── generated/
 ├── docs/
 ├── postman/
-├── docker/
 ├── docker-compose.yml
 ├── prisma.config.ts
-└── .env.example
+├── .env.example
+├── .env.docker.example
+└── README.md
 ```
 
 ---
@@ -247,9 +241,7 @@ Example:
 GET /api/jobs?userId=<user_id>
 ```
 
-The backend validates ownership before accessing user-specific resources.
-
-In the production version, this development mechanism should be replaced with server-side Clerk authentication middleware so the backend derives the user identity from the authenticated session instead of trusting client-provided `userId`.
+In a production version, this development mechanism should be replaced with server-side Clerk authentication middleware so the backend derives the user identity from the authenticated session instead of trusting client-provided `userId`.
 
 ---
 
@@ -278,10 +270,11 @@ GET /api/database
 
 ```text
 POST   /api/cvs
+POST   /api/cvs/upload
 GET    /api/cvs?userId=<user_id>
 GET    /api/cvs/:id?userId=<user_id>
 DELETE /api/cvs/:id?userId=<user_id>
-POST   /api/cvs/:id/analyze
+POST   /api/cvs/:id/analyze?userId=<user_id>
 ```
 
 ### Job Management
@@ -328,14 +321,20 @@ Current MVP testing approach:
 - TypeScript type-checking
 - Prisma schema validation
 - Manual frontend testing
+- Dockerized backend runtime testing
 
-Automated tests are planned after the frontend MVP flow is completed and the API shape becomes stable.
-
-### Type Check Backend
+### Backend Type Check
 
 ```bash
 cd backend
 npm run type-check
+```
+
+### Backend Production Build
+
+```bash
+cd backend
+npm run build
 ```
 
 ### Manual API Testing
@@ -346,22 +345,10 @@ The repository includes a Postman collection:
 postman/HireLens.postman_collection.json
 ```
 
-Postman variables:
-
-```text
-base_url
-user_id
-cv_id
-job_id
-match_id
-session_id
-question_id
-```
-
-Run the manual MVP flow in this order:
+Recommended manual MVP flow:
 
 1. Set `base_url` and `user_id`.
-2. Create a CV and save `cv_id`.
+2. Create or upload a CV and save `cv_id`.
 3. Analyze the CV.
 4. Create a job and save `job_id`.
 5. Match the job and save `match_id`.
@@ -370,7 +357,7 @@ Run the manual MVP flow in this order:
 8. Submit an interview answer.
 9. Confirm the answer score, feedback, and updated `overallScore`.
 
-Automated backend tests are planned after the MVP frontend flow stabilizes.
+Automated backend tests are planned after the MVP flow becomes stable.
 
 ---
 
@@ -392,16 +379,7 @@ The backend uses:
 - Fallback model support
 - Clean API error responses
 
-If Gemini remains unavailable, the backend returns:
-
-```json
-{
-  "status": "error",
-  "message": "AI service is temporarily unavailable. Please try again later."
-}
-```
-
-The server should not crash because of temporary AI service failures.
+If Gemini remains unavailable, the backend returns a clean API error response instead of crashing the server.
 
 ---
 
@@ -411,12 +389,11 @@ The server should not crash because of temporary AI service failures.
 
 Install:
 
-- Node.js 18+
+- Node.js 20+
 - npm
 - Docker
 - Docker Compose
 - Gemini API key
-- Clerk keys for planned/in-progress authentication integration
 
 ---
 
@@ -450,6 +427,7 @@ Create a root `.env` file:
 ```env
 NODE_ENV=development
 BACKEND_PORT=3001
+PORT=3001
 
 DATABASE_URL=postgresql://hirelens:hirelens123@localhost:5432/hirelens_db?schema=public
 
@@ -459,8 +437,8 @@ GEMINI_API_KEY=your_gemini_api_key
 GEMINI_MODEL=your_primary_gemini_model
 GEMINI_FALLBACK_MODEL=your_fallback_gemini_model
 
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
-CLERK_SECRET_KEY=your_clerk_secret_key
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+CLERK_SECRET_KEY=
 ```
 
 Create a frontend `.env.local` file inside `frontend/`:
@@ -470,14 +448,23 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:3001/api
 NEXT_PUBLIC_DEMO_USER_ID=your_test_user_id
 ```
 
-Never commit `.env` or production secrets to Git.
+Never commit `.env`, `.env.local`, `.env.docker`, or production secrets to Git.
 
 ---
 
-### 4. Install Backend Dependencies
+### 4. Install Dependencies
+
+Backend:
 
 ```bash
 cd backend
+npm install
+```
+
+Frontend:
+
+```bash
+cd ../frontend
 npm install
 ```
 
@@ -497,11 +484,6 @@ npx prisma generate
 
 ```bash
 npx prisma validate
-```
-
-Check migration status:
-
-```bash
 npx prisma migrate status
 ```
 
@@ -533,27 +515,12 @@ http://localhost:3001/api/health
 
 ---
 
-### 8. Install Frontend Dependencies
+### 8. Start Frontend
 
-Open another terminal:
-
-```bash
-cd frontend
-npm install
-```
-
----
-
-### 9. Start Frontend
+From `frontend/`:
 
 ```bash
 npm run dev
-```
-
-For frontend TypeScript validation, run from `frontend/`:
-
-```bash
-npm run type-check
 ```
 
 Frontend runs at:
@@ -566,29 +533,70 @@ http://localhost:3000
 
 ## 🐳 Docker
 
-### Start Services
+### Start PostgreSQL
 
 ```bash
 docker-compose up -d
 ```
 
-### Stop Services
+### Build Backend Docker Image
+
+From the repository root:
 
 ```bash
-docker-compose down
+docker build -f backend/Dockerfile -t hirelens-backend .
 ```
 
-### View Containers
+### Run Backend Container Locally
+
+If PostgreSQL is running through Docker Compose, use a Docker-specific env file:
 
 ```bash
-docker-compose ps
+docker run --rm -p 3001:3001 --env-file .env.docker --network hire-lens_default hirelens-backend
 ```
 
-### PostgreSQL CLI
+Replace `hire-lens_default` with your actual Docker network name if different.
 
-```bash
-docker-compose exec postgres psql -U hirelens -d hirelens_db
+### Docker Environment Example
+
+Create `.env.docker` locally using `.env.docker.example`.
+
+The key difference from normal local development is the database host:
+
+```env
+DATABASE_URL=postgresql://hirelens:hirelens123@postgres:5432/hirelens_db?schema=public
 ```
+
+Inside Docker, `postgres` refers to the PostgreSQL service name from `docker-compose.yml`.
+
+---
+
+## ☁️ Google Cloud Run Readiness
+
+The HireLens backend is containerized and prepared for Google Cloud Run deployment.
+
+### Google Cloud Services Prepared
+
+- Cloud Run for containerized backend deployment
+- Artifact Registry for storing Docker images
+- Cloud Logging for runtime logs
+- Secret Manager for production secrets
+- Cloud SQL PostgreSQL as a future production database option
+
+### Why Cloud Run Fits This Project
+
+Cloud Run can run the Dockerized Express.js backend as a managed container service. The backend has been prepared to support the `PORT` environment variable required by Cloud Run.
+
+The current MVP uses local Docker PostgreSQL for development. A production GCP deployment can later replace this with Cloud SQL PostgreSQL and store secrets in Secret Manager.
+
+### Current Cloud Readiness Completed
+
+- Backend Dockerfile added
+- Production build support added
+- Dockerized backend tested locally
+- Docker network-based PostgreSQL connectivity tested
+- Cloud Run `PORT` support prepared
+- GCP deployment flow documented
 
 ---
 
@@ -601,8 +609,9 @@ docker-compose exec postgres psql -U hirelens -d hirelens_db
 | Database Name | `hirelens_db`        |
 | Username      | `hirelens`           |
 | Password      | `hirelens123`        |
+| Local Host    | `localhost`          |
+| Docker Host   | `postgres`           |
 | Port          | `5432`               |
-| Host          | `localhost`          |
 
 These credentials are for local development only.
 
@@ -636,76 +645,6 @@ http://localhost:3000
 
 ---
 
-## 📈 Current Development Status
-
-### Completed
-
-- ✅ Project architecture
-- ✅ Backend foundation
-- ✅ PostgreSQL setup
-- ✅ Prisma schema
-- ✅ Database migrations
-- ✅ Health endpoints
-- ✅ Database connectivity endpoint
-- ✅ CV management
-- ✅ AI CV analysis
-- ✅ Candidate profile extraction
-- ✅ Job management
-- ✅ AI job matching
-- ✅ Job match persistence
-- ✅ Duplicate job match protection
-- ✅ Interview session management
-- ✅ AI interview question generation
-- ✅ AI interview answer evaluation
-- ✅ Interview overall score calculation
-- ✅ Gemini retry and fallback handling
-- ✅ Manual Postman API testing
-
-### In Progress
-
-- ⏳ Frontend integration
-- ⏳ UI polish
-- ⏳ Clerk backend authentication enforcement; current MVP uses `userId` for development ownership validation
-- ⏳ Portfolio screenshots
-
-### Planned
-
-- 📌 Automated backend tests
-- 📌 Production deployment
-- 📌 Real CV file upload support
-- 📌 External job source integrations
-- 📌 Advanced career analytics
-
----
-
-## 🧭 Roadmap
-
-```text
-Project Foundation
-        ↓
-Database Design
-        ↓
-CV Management
-        ↓
-AI CV Analyzer
-        ↓
-Job Management
-        ↓
-AI Job Matcher
-        ↓
-AI Interview Coach
-        ↓
-Frontend Integration
-        ↓
-UI Polish
-        ↓
-Testing & Hardening
-        ↓
-Deployment
-```
-
----
-
 ## 📖 Documentation
 
 | Document                        | Description                       |
@@ -719,28 +658,6 @@ Deployment
 
 ---
 
-## 🤝 Contributing
-
-HireLens follows a defined architecture and frozen MVP specification.
-
-Before making architectural or database changes:
-
-1. Review the project specification.
-2. Review the architecture documentation.
-3. Review the database design.
-4. Document approved architectural changes.
-5. Update affected implementation and documentation.
-
-Do not silently change the frozen architecture or database design.
-
----
-
-## 📝 License
-
-MIT
-
----
-
 ## 👤 Author
 
 **Tharindu Dharmadasa**  
@@ -751,13 +668,15 @@ Sri Lanka
 
 ## 📌 Project Summary
 
-| Area         | Details                                    |
-| ------------ | ------------------------------------------ |
-| Project      | HireLens                                   |
-| Architecture | Modular Monolith                           |
-| Backend      | Express.js + TypeScript                    |
-| Frontend     | Next.js + TypeScript                       |
-| Database     | PostgreSQL + Prisma                        |
-| AI           | Google Gemini                              |
-| API Style    | REST                                       |
-| Status       | Backend MVP Complete, Frontend In Progress |
+| Area             | Details                                            |
+| ---------------- | -------------------------------------------------- |
+| Project          | HireLens                                           |
+| Architecture     | Modular Monolith                                   |
+| Backend          | Express.js + TypeScript                            |
+| Frontend         | Next.js + TypeScript                               |
+| Database         | PostgreSQL + Prisma                                |
+| AI               | Google Gemini                                      |
+| Containerization | Docker                                             |
+| Cloud Readiness  | Google Cloud Run, Artifact Registry, Cloud Logging |
+| API Style        | REST                                               |
+| Status           | MVP Complete, Dockerized Backend, Cloud Run Ready  |

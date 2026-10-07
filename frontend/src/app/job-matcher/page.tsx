@@ -11,7 +11,6 @@ import {
   Grid,
   GridCol,
   Group,
-  JsonInput,
   List,
   Progress,
   Stack,
@@ -27,6 +26,16 @@ import {
   IconSparkles,
 } from "@tabler/icons-react";
 import { apiRequest, getDemoUserId } from "@/lib/api";
+
+type CandidateProfile = {
+  fullName?: string | null;
+  headline?: string | null;
+  summary?: string | null;
+  skills?: unknown;
+  experience?: unknown;
+  education?: unknown;
+  certifications?: unknown;
+};
 
 interface ApiResponse<T> {
   status: "ok" | "error";
@@ -65,7 +74,7 @@ interface MatchJobResponse {
     fileName: string;
     uploadedAt?: string;
   };
-  candidateProfile?: unknown;
+  candidateProfile?: CandidateProfile | null;
 }
 
 // const sampleDescription = `We are looking for a Full-Stack Software Engineer Intern who can work with React, Next.js, Node.js, REST APIs, SQL databases, Git, and modern web development practices.
@@ -90,6 +99,38 @@ function normalizeList(value: unknown): string[] {
   }
 
   return [];
+}
+
+function toTextList(value: unknown): string[] {
+  if (!value) return [];
+
+  if (Array.isArray(value)) {
+    return value.map((item) =>
+      typeof item === "string" ? item : JSON.stringify(item),
+    );
+  }
+
+  if (typeof value === "string") {
+    return [value];
+  }
+
+  if (typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>).map(
+      ([key, item]) => {
+        if (Array.isArray(item)) {
+          return `${key}: ${item.join(", ")}`;
+        }
+
+        if (typeof item === "object" && item !== null) {
+          return `${key}: ${JSON.stringify(item)}`;
+        }
+
+        return `${key}: ${String(item)}`;
+      },
+    );
+  }
+
+  return [String(value)];
 }
 
 export default function JobMatcherPage() {
@@ -198,6 +239,8 @@ export default function JobMatcherPage() {
   const matchedSkills = normalizeList(matchResult?.match.matchedSkills);
   const missingSkills = normalizeList(matchResult?.match.missingSkills);
 
+  const candidateProfile = matchResult?.candidateProfile;
+
   return (
     <main className="hero-shell">
       <Container size="lg">
@@ -264,7 +307,9 @@ export default function JobMatcherPage() {
                     label="Job description"
                     placeholder="We are looking for a Full-Stack Software Engineer Intern who can work with React, Next.js, Node.js, REST APIs, SQL databases, Git, and modern web development practices."
                     description="Provide a brief description of the job role and responsibilities."
+                    autosize
                     minRows={10}
+                    maxRows={20}
                     value={description}
                     onChange={(event) =>
                       setDescription(event.currentTarget.value)
@@ -451,17 +496,71 @@ export default function JobMatcherPage() {
                       This is the profile compared against the job.
                     </Text>
 
-                    <JsonInput
-                      mt="md"
-                      value={JSON.stringify(
-                        matchResult.candidateProfile,
-                        null,
-                        2,
-                      )}
-                      autosize
-                      minRows={8}
-                      readOnly
-                    />
+                    {candidateProfile && (
+                      <Card withBorder radius="md" mt="md" p="md">
+                        <Stack gap="sm">
+                          <Title order={4}>Candidate Profile</Title>
+
+                          {candidateProfile.fullName && (
+                            <Text>
+                              <strong>Name:</strong> {candidateProfile.fullName}
+                            </Text>
+                          )}
+
+                          {candidateProfile.headline && (
+                            <Text>
+                              <strong>Headline:</strong>{" "}
+                              {candidateProfile.headline}
+                            </Text>
+                          )}
+
+                          {candidateProfile.summary && (
+                            <Text>
+                              <strong>Summary:</strong>{" "}
+                              {candidateProfile.summary}
+                            </Text>
+                          )}
+
+                          <Divider />
+
+                          <Text fw={700}>Skills</Text>
+
+                          <Group gap="xs">
+                            {toTextList(candidateProfile.skills).map(
+                              (skill) => (
+                                <Badge key={skill} variant="light">
+                                  {skill}
+                                </Badge>
+                              ),
+                            )}
+                          </Group>
+
+                          <Text fw={700}>Experience</Text>
+
+                          <Stack gap={4}>
+                            {toTextList(candidateProfile.experience).map(
+                              (item) => (
+                                <Text key={item} size="sm">
+                                  • {item}
+                                </Text>
+                              ),
+                            )}
+                          </Stack>
+
+                          <Text fw={700}>Education</Text>
+
+                          <Stack gap={4}>
+                            {toTextList(candidateProfile.education).map(
+                              (item) => (
+                                <Text key={item} size="sm">
+                                  • {item}
+                                </Text>
+                              ),
+                            )}
+                          </Stack>
+                        </Stack>
+                      </Card>
+                    )}
                   </Card>
                 ) : null}
               </Stack>

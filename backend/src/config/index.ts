@@ -3,9 +3,12 @@
  */
 
 export const config = {
-  port: process.env.BACKEND_PORT
-    ? parseInt(process.env.BACKEND_PORT, 10)
-    : 3001,
+  port: process.env.PORT
+    ? parseInt(process.env.PORT, 10)
+    : process.env.BACKEND_PORT
+      ? parseInt(process.env.BACKEND_PORT, 10)
+      : 3001,
+
   nodeEnv: process.env.NODE_ENV || "development",
   apiPrefix: "/api",
   corsOrigin: process.env.CORS_ORIGIN || "http://localhost:3000",
