@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import path from "path";
 import { PrismaPg } from "@prisma/adapter-pg";
 // @ts-ignore The generated client is outside the backend source root.
-import { PrismaClient } from "../../../generated/prisma/client.js";
+import { PrismaClient } from "../generated/prisma/client.js";
 
 dotenv.config({
   path: path.resolve(process.cwd(), "../.env"),
