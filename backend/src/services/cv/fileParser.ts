@@ -1,6 +1,6 @@
 import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
-import { ApiError } from "@/types/index.js";
+import { ApiError } from "../../types/index.js";
 
 type UploadedFile = {
   originalname: string;

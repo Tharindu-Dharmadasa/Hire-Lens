@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getAuth } from "@clerk/express";
-import { prisma } from "@/database/prisma.js";
+import { prisma } from "../database/prisma.js";
 
 export async function requireCurrentUser(
   req: Request,

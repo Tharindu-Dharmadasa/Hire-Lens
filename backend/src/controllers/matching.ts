@@ -5,8 +5,8 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { MatchingService } from "@/services/matching/index.js";
-import { ApiError } from "@/types/index.js";
+import { MatchingService } from "../services/matching/index.js";
+import { ApiError } from "../types/index.js";
 
 const matchingService = new MatchingService();
 

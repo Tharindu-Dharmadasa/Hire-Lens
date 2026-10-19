@@ -2,7 +2,7 @@
  * Request Validators
  */
 
-import { ApiError, JsonValue } from "@/types/index.js";
+import { ApiError, JsonValue } from "../types/index.js";
 
 export function validateCreateCV(data: unknown): {
   userId: string;

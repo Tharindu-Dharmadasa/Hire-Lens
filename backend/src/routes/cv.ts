@@ -11,7 +11,7 @@ import {
   deleteCV,
   analyzeCV,
   uploadCV,
-} from "@/controllers/cv.js";
+} from "../controllers/cv.js";
 
 export const cvRouter = Router();
 

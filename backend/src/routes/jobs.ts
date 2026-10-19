@@ -3,7 +3,7 @@
  */
 
 import { Router } from "express";
-import { createJob, listJobs, getJob, deleteJob } from "@/controllers/jobs.js";
+import { createJob, listJobs, getJob, deleteJob } from "../controllers/jobs.js";
 
 export const jobsRouter = Router();
 

@@ -4,9 +4,9 @@
  * Handles AI-powered interview sessions and answers.
  */
 
-import { prisma } from "@/database/prisma.js";
-import { AIService } from "@/services/ai/index.js";
-import { ApiError } from "@/types/index.js";
+import { prisma } from "../../database/prisma.js";
+import { AIService } from "../../services/ai/index.js";
+import { ApiError } from "../../types/index.js";
 export interface CreateInterviewSessionData {
   userId: string;
   jobTitle?: string;

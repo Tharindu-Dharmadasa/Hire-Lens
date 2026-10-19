@@ -5,9 +5,9 @@
  * CandidateProfile extraction.
  */
 
-import { prisma } from "@/database/prisma.js";
-import { ApiError } from "@/types/index.js";
-import { AIService, CVAnalysisResult } from "@/services/ai/index.js";
+import { prisma } from "../../database/prisma.js";
+import { ApiError } from "../../types/index.js";
+import { AIService, CVAnalysisResult } from "../../services/ai/index.js";
 
 export interface CreateCVData {
   userId: string;

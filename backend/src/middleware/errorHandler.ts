@@ -3,7 +3,7 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { ApiError } from "@/types/index.js";
+import { ApiError } from "../types/index.js";
 
 export function errorHandler(
   err: Error | ApiError,

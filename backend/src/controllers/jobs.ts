@@ -3,8 +3,8 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { JobsService } from "@/services/jobs/index.js";
-import { validateCreateJob } from "@/validators/index.js";
+import { JobsService } from "../services/jobs/index.js";
+import { validateCreateJob } from "../validators/index.js";
 
 const jobsService = new JobsService();
 

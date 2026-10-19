@@ -4,8 +4,8 @@
  * Handles job opportunities and job-related operations.
  */
 
-import { prisma } from "@/database/prisma.js";
-import { ApiError, JsonValue } from "@/types/index.js";
+import { prisma } from "../../database/prisma.js";
+import { ApiError, JsonValue } from "../../types/index.js";
 
 export interface CreateJobData {
   userId: string;

@@ -8,7 +8,7 @@ import {
   listMatches,
   getMatch,
   deleteMatch,
-} from "@/controllers/matching.js";
+} from "../controllers/matching.js";
 
 export const matchingRouter = Router();
 

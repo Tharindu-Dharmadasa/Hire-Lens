@@ -5,7 +5,7 @@ import {
   getInterviewSession,
   submitInterviewAnswer,
   deleteInterviewSession,
-} from "@/controllers/interview.js";
+} from "../controllers/interview.js";
 
 export const interviewRouter = Router();
 

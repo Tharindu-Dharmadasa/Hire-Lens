@@ -3,7 +3,7 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { HealthService } from "@/services/health.js";
+import { HealthService } from "../services/health.js";
 
 const healthService = new HealthService();
 

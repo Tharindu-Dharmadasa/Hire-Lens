@@ -3,10 +3,10 @@
  */
 
 import { Request, Response, NextFunction } from "express";
-import { CVService } from "@/services/cv/index.js";
-import { extractTextFromCVFile } from "@/services/cv/fileParser.js";
-import { validateCreateCV } from "@/validators/index.js";
-import { ApiError } from "@/types/index.js";
+import { CVService } from "../services/cv/index.js";
+import { extractTextFromCVFile } from "../services/cv/fileParser.js";
+import { validateCreateCV } from "../validators/index.js";
+import { ApiError } from "../types/index.js";
 
 const cvService = new CVService();
 
