@@ -10,7 +10,7 @@ import cors from "cors";
 import { config } from "./config/index.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 import { healthRouter } from "./routes/health.js";
-import { databaseRouter } from "@/routes/database.js";
+import { databaseRouter } from "./routes/database.js";
 import { cvRouter } from "./routes/cv.js";
 import { jobsRouter } from "./routes/jobs.js";
 import { matchingRouter } from "./routes/matching.js";
