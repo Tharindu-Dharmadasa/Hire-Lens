@@ -14,7 +14,10 @@ export async function createInterviewSession(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const data = validateCreateInterviewSession(req.body);
+    const data = validateCreateInterviewSession({
+      ...req.body,
+      userId: res.locals.userId,
+    });
 
     const session = await interviewService.createSession(data);
 
@@ -34,7 +37,7 @@ export async function listInterviewSessions(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
@@ -58,7 +61,7 @@ export async function getInterviewSession(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
@@ -82,7 +85,7 @@ export async function submitInterviewAnswer(
 ): Promise<void> {
   try {
     const { id: sessionId, questionId } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
@@ -114,7 +117,7 @@ export async function deleteInterviewSession(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");

@@ -1,3 +1,4 @@
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { AppLayout } from "@/components/app-layout";
 
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppLayout>{children}</AppLayout>
+        <ClerkProvider>
+          <AppLayout>{children}</AppLayout>
+        </ClerkProvider>
       </body>
     </html>
   );

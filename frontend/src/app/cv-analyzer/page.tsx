@@ -27,7 +27,8 @@ import {
   IconFileAnalytics,
   IconSparkles,
 } from "@tabler/icons-react";
-import { apiRequest, getDemoUserId } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
+import { useAuth } from "@clerk/nextjs";
 
 interface ApiResponse<T> {
   status: "ok" | "error";
@@ -97,6 +98,8 @@ export default function CVAnalyzerPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [loadingUpload, setLoadingUpload] = useState(false);
 
+  const { getToken } = useAuth();
+
   async function createCV() {
     setError("");
     setAnalysis(null);
@@ -115,10 +118,15 @@ export default function CVAnalyzerPage() {
     try {
       setLoadingCreate(true);
 
-      const response = await apiRequest<unknown>("/cvs", {
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to create a CV.");
+      }
+
+      const response = await apiRequest<unknown>("/cvs", token, {
         method: "POST",
         body: JSON.stringify({
-          userId: getDemoUserId(),
           fileName,
           rawText,
         }),
@@ -155,8 +163,14 @@ export default function CVAnalyzerPage() {
     try {
       setLoadingUpload(true);
 
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to upload a CV.");
+      }
+
       const formData = new FormData();
-      formData.append("userId", getDemoUserId());
+
       formData.append("file", selectedFile);
 
       const apiBaseUrl =
@@ -164,6 +178,9 @@ export default function CVAnalyzerPage() {
 
       const response = await fetch(`${apiBaseUrl}/cvs/upload`, {
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         body: formData,
       });
 
@@ -202,8 +219,15 @@ export default function CVAnalyzerPage() {
     try {
       setLoadingAnalyze(true);
 
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to analyze your CV.");
+      }
+
       const response = await apiRequest<ApiResponse<AnalyzeCVResponse>>(
-        `/cvs/${cv.id}/analyze?userId=${getDemoUserId()}`,
+        `/cvs/${cv.id}/analyze`,
+        token,
         {
           method: "POST",
         },

@@ -12,6 +12,13 @@ import {
   Title,
 } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignUpButton,
+  UserButton,
+} from "@clerk/nextjs";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -53,7 +60,23 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 </Button>
               </Group>
 
-              <Button component={Link} href="/cv-analyzer" visibleFrom="sm">
+              <Group gap="sm">
+                <SignedOut>
+                  <SignInButton mode="modal">
+                    <Button variant="default">Sign In</Button>
+                  </SignInButton>
+
+                  <SignUpButton mode="modal">
+                    <Button>Sign Up</Button>
+                  </SignUpButton>
+                </SignedOut>
+
+                <SignedIn>
+                  <UserButton />
+                </SignedIn>
+              </Group>
+
+              <Button disabled component={Link} href="/cv-analyzer" visibleFrom="sm">
                 Start Demo
               </Button>
 

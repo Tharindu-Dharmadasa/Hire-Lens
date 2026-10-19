@@ -25,7 +25,8 @@ import {
   IconBriefcase,
   IconSparkles,
 } from "@tabler/icons-react";
-import { apiRequest, getDemoUserId } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
+import { useAuth } from "@clerk/nextjs";
 
 type CandidateProfile = {
   fullName?: string | null;
@@ -134,6 +135,8 @@ function toTextList(value: unknown): string[] {
 }
 
 export default function JobMatcherPage() {
+  const { getToken } = useAuth();
+
   const [title, setTitle] = useState("");
   const [company, setCompany] = useState("");
   const [location, setLocation] = useState("");
@@ -176,18 +179,27 @@ export default function JobMatcherPage() {
     try {
       setLoadingCreate(true);
 
-      const response = await apiRequest<ApiResponse<JobRecord>>("/jobs", {
-        method: "POST",
-        body: JSON.stringify({
-          userId: getDemoUserId(),
-          title,
-          company,
-          location,
-          description,
-          requirements: parsedRequirements,
-          source: "HireLens Demo",
-        }),
-      });
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to create a job.");
+      }
+
+      const response = await apiRequest<ApiResponse<JobRecord>>(
+        "/jobs",
+        token,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            title,
+            company,
+            location,
+            description,
+            requirements: parsedRequirements,
+            source: "HireLens",
+          }),
+        },
+      );
 
       setJob(response.data);
 
@@ -214,8 +226,15 @@ export default function JobMatcherPage() {
     try {
       setLoadingMatch(true);
 
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to match a job.");
+      }
+
       const response = await apiRequest<ApiResponse<MatchJobResponse>>(
-        `/jobs/${job.id}/match?userId=${encodeURIComponent(getDemoUserId())}`,
+        `/jobs/${job.id}/match`,
+        token,
         {
           method: "POST",
           body: JSON.stringify({}),
@@ -372,7 +391,8 @@ export default function JobMatcherPage() {
                     <div>
                       <Title order={3}>AI Job Match Result</Title>
                       <Text c="dimmed" size="sm" mt={4}>
-                        Uses the latest analyzed CV profile for this demo user.
+                        Uses your latest analyzed CV profile to evaluate job
+                        compatibility.
                       </Text>
                     </div>
 

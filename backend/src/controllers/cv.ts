@@ -18,7 +18,10 @@ export async function createCV(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const data = validateCreateCV(req.body);
+    const data = validateCreateCV({
+      ...req.body,
+      userId: res.locals.userId,
+    });
 
     const result = await cvService.createCV(data);
 
@@ -38,7 +41,7 @@ export async function uploadCV(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const userId = req.body.userId as string | undefined;
+    const userId = res.locals.userId as string | undefined;
 
     if (!userId || typeof userId !== "string") {
       throw new ApiError(400, "userId is required and must be a string");
@@ -74,7 +77,7 @@ export async function listCVs(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({
@@ -104,7 +107,7 @@ export async function getCV(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({
@@ -134,7 +137,7 @@ export async function deleteCV(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({
@@ -164,7 +167,7 @@ export async function analyzeCV(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({

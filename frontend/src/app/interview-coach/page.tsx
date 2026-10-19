@@ -24,7 +24,8 @@ import {
   IconMessageQuestion,
   IconSparkles,
 } from "@tabler/icons-react";
-import { apiRequest, getDemoUserId } from "@/lib/api";
+import { apiRequest } from "@/lib/api";
+import { useAuth } from "@clerk/nextjs";
 
 interface ApiResponse<T> {
   status: "ok" | "error";
@@ -94,6 +95,8 @@ function extractSessionFromResponse(data: unknown): InterviewSession {
 }
 
 export default function InterviewCoachPage() {
+  const { getToken } = useAuth();
+
   const [jobTitle, setJobTitle] = useState("");
   const [company, setCompany] = useState("");
   const [sessionType, setSessionType] = useState("");
@@ -133,10 +136,15 @@ export default function InterviewCoachPage() {
     try {
       setLoadingCreate(true);
 
-      const response = await apiRequest<unknown>("/interviews", {
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to create an interview session.");
+      }
+
+      const response = await apiRequest<unknown>("/interviews", token, {
         method: "POST",
         body: JSON.stringify({
-          userId: getDemoUserId(),
           jobTitle,
           company,
           sessionType,
@@ -182,10 +190,15 @@ export default function InterviewCoachPage() {
     try {
       setLoadingAnswer(true);
 
+      const token = await getToken();
+
+      if (!token) {
+        throw new Error("Please sign in to submit an interview answer.");
+      }
+
       const response = await apiRequest<ApiResponse<SubmitAnswerResponse>>(
-        `/interviews/${session.id}/questions/${selectedQuestion.id}/answer?userId=${encodeURIComponent(
-          getDemoUserId(),
-        )}`,
+        `/interviews/${session.id}/questions/${selectedQuestion.id}/answer`,
+        token,
         {
           method: "POST",
           body: JSON.stringify({
