@@ -7,8 +7,9 @@ import "@mantine/notifications/styles.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "HireLens",
-  description: "AI-powered career intelligence platform",
+  title: "HireLens | AI-Powered Career Intelligence",
+  description:
+    "Analyze your CV, match jobs with AI, and prepare for interviews with HireLens.",
 };
 
 export default function RootLayout({
