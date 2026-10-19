@@ -17,9 +17,9 @@
  * JobMatch
  */
 
-import { prisma } from "@/database/prisma.js";
-import { AIService, JobMatchResult } from "@/services/ai/index.js";
-import { ApiError } from "@/types/index.js";
+import { prisma } from "../../database/prisma.js";
+import { AIService, JobMatchResult } from "../../services/ai/index.js";
+import { ApiError } from "../../types/index.js";
 
 export interface MatchJobData {
   userId: string;

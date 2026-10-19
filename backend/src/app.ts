@@ -7,17 +7,17 @@
 
 import express, { Express } from "express";
 import cors from "cors";
-import { config } from "@/config/index.js";
-import { errorHandler, notFoundHandler } from "@/middleware/errorHandler.js";
-import { healthRouter } from "@/routes/health.js";
+import { config } from "./config/index.js";
+import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
+import { healthRouter } from "./routes/health.js";
 import { databaseRouter } from "@/routes/database.js";
-import { cvRouter } from "@/routes/cv.js";
-import { jobsRouter } from "@/routes/jobs.js";
-import { matchingRouter } from "@/routes/matching.js";
-import { interviewRouter } from "@/routes/interview.js";
+import { cvRouter } from "./routes/cv.js";
+import { jobsRouter } from "./routes/jobs.js";
+import { matchingRouter } from "./routes/matching.js";
+import { interviewRouter } from "./routes/interview.js";
 import { clerkMiddleware } from "@clerk/express";
-import { userRouter } from "./routes/user";
-import { requireCurrentUser } from "./middleware/currentUser";
+import { userRouter } from "./routes/user.js";
+import { requireCurrentUser } from "./middleware/currentUser.js";
 
 export function createApp(): Express {
   const app = express();

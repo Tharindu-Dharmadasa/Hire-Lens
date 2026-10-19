@@ -9,7 +9,7 @@
  */
 
 import { GoogleGenAI } from "@google/genai";
-import { ApiError } from "@/types/index.js";
+import { ApiError } from "../../types/index.js";
 
 export interface CVAnalysisResult {
   score: number;

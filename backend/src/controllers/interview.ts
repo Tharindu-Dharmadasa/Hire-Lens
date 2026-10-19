@@ -1,10 +1,10 @@
 import { Request, Response, NextFunction } from "express";
-import { InterviewService } from "@/services/interview/index.js";
+import { InterviewService } from "../services/interview/index.js";
 import {
   validateCreateInterviewSession,
   validateSubmitInterviewAnswer,
-} from "@/validators/index.js";
-import { ApiError } from "@/types/index.js";
+} from "../validators/index.js";
+import { ApiError } from "../types/index.js";
 
 const interviewService = new InterviewService();
 
