@@ -1,4 +1,3 @@
-import { PDFParse } from "pdf-parse";
 import mammoth from "mammoth";
 import { ApiError } from "../../types/index.js";
 
@@ -14,19 +13,35 @@ export async function extractTextFromCVFile(
   const originalName = file.originalname.toLowerCase();
 
   if (originalName.endsWith(".pdf")) {
-    const parser = new PDFParse({ data: file.buffer });
-    const result = await parser.getText();
-    const text = result.text?.trim();
+    // Load PDF dependencies only when processing a PDF.
+    // Initialize the canvas/worker before importing PDFParse.
+    const { CanvasFactory } = await import("pdf-parse/worker");
+    const { PDFParse } = await import("pdf-parse");
 
-    if (!text) {
-      throw new ApiError(400, "Could not extract text from the PDF file");
+    const parser = new PDFParse({
+      data: new Uint8Array(file.buffer),
+      CanvasFactory,
+    });
+
+    try {
+      const result = await parser.getText();
+      const text = result.text?.trim();
+
+      if (!text) {
+        throw new ApiError(400, "Could not extract text from the PDF file");
+      }
+
+      return text;
+    } finally {
+      await parser.destroy();
     }
-
-    return text;
   }
 
   if (originalName.endsWith(".docx")) {
-    const result = await mammoth.extractRawText({ buffer: file.buffer });
+    const result = await mammoth.extractRawText({
+      buffer: file.buffer,
+    });
+
     const text = result.value?.trim();
 
     if (!text) {
