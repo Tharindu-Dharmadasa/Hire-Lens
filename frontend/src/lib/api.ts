@@ -3,14 +3,20 @@ const API_BASE_URL =
 
 export async function apiRequest<T>(
   path: string,
+  token: string,
   options: RequestInit = {},
 ): Promise<T> {
+  const headers = new Headers(options.headers);
+
+  headers.set("Authorization", `Bearer ${token}`);
+
+  if (options.body && !(options.body instanceof FormData)) {
+    headers.set("Content-Type", "application/json");
+  }
+
   const response = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...(options.headers || {}),
-    },
+    headers,
   });
 
   const data = await response.json();
@@ -20,14 +26,4 @@ export async function apiRequest<T>(
   }
 
   return data as T;
-}
-
-export function getDemoUserId(): string {
-  const userId = process.env.NEXT_PUBLIC_DEMO_USER_ID;
-
-  if (!userId) {
-    throw new Error("NEXT_PUBLIC_DEMO_USER_ID is not configured");
-  }
-
-  return userId;
 }

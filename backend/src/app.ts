@@ -15,14 +15,23 @@ import { cvRouter } from "@/routes/cv.js";
 import { jobsRouter } from "@/routes/jobs.js";
 import { matchingRouter } from "@/routes/matching.js";
 import { interviewRouter } from "@/routes/interview.js";
+import { clerkMiddleware } from "@clerk/express";
+import { userRouter } from "./routes/user";
+import { requireCurrentUser } from "./middleware/currentUser";
 
 export function createApp(): Express {
   const app = express();
 
+  const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
   app.use(
     cors({
-      origin: config.corsOrigin,
-      credentials: true,
+      origin: allowedOrigins,
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
     }),
   );
 
@@ -38,13 +47,24 @@ export function createApp(): Express {
     });
   });
 
+  app.use(
+    clerkMiddleware({
+      authorizedParties: allowedOrigins,
+    }),
+  );
+
   app.use(config.apiPrefix, healthRouter);
-  app.use(config.apiPrefix, databaseRouter);
-  app.use(config.apiPrefix, cvRouter);
-  app.use(config.apiPrefix, jobsRouter);
-  app.use(config.apiPrefix, matchingRouter);
-  app.use(config.apiPrefix, interviewRouter);
-  
+
+  app.use(config.apiPrefix, userRouter);
+
+  if (config.nodeEnv !== "production") {
+    app.use(config.apiPrefix, requireCurrentUser, databaseRouter);
+  }
+
+  app.use(config.apiPrefix, requireCurrentUser, cvRouter);
+  app.use(config.apiPrefix, requireCurrentUser, jobsRouter);
+  app.use(config.apiPrefix, requireCurrentUser, matchingRouter);
+  app.use(config.apiPrefix, requireCurrentUser, interviewRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

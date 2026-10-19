@@ -17,7 +17,10 @@ export async function createJob(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const data = validateCreateJob(req.body);
+    const data = validateCreateJob({
+      ...req.body,
+      userId: res.locals.userId,
+    });
 
     const job = await jobsService.createJob(data);
 
@@ -39,7 +42,7 @@ export async function listJobs(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({
@@ -70,7 +73,7 @@ export async function getJob(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({
@@ -101,7 +104,7 @@ export async function deleteJob(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       res.status(400).json({

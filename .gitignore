@@ -46,3 +46,11 @@ Thumbs.db
 # Temporary
 tmp/
 temp/
+
+
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# Local AI agent configuration
+frontend/.agents/
+frontend/skills-lock.json

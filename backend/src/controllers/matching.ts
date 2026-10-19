@@ -30,7 +30,7 @@ export async function matchJob(
 ): Promise<void> {
   try {
     const { id: jobId } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
@@ -66,7 +66,7 @@ export async function listMatches(
   next: NextFunction,
 ): Promise<void> {
   try {
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
@@ -95,7 +95,7 @@ export async function getMatch(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
@@ -124,7 +124,7 @@ export async function deleteMatch(
 ): Promise<void> {
   try {
     const { id } = req.params;
-    const userId = req.query.userId as string;
+    const userId = res.locals.userId as string;
 
     if (!userId) {
       throw new ApiError(400, "userId query parameter is required");
