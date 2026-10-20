@@ -1,6 +1,7 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
-import { AppLayout } from "@/components/app-layout";
+import { AppLayout } from "../components/app-layout";
+import { UserSync } from "../components/user-sync";
 
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <ClerkProvider>
+          <UserSync />
           <AppLayout>{children}</AppLayout>
         </ClerkProvider>
       </body>
